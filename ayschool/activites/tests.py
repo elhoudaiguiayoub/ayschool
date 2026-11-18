@@ -69,3 +69,27 @@ class EstablishmentWorkflowTest(TestCase):
         self.assertRedirects(self.client.get(reverse('deconnexion')), reverse('profil'))
         self.assertRedirects(self.client.post(reverse('deconnexion')), reverse('accueil'))
         self.assertRedirects(self.client.get(reverse('suivi')), reverse('connexion'))
+
+    def test_staff_roster_scope_and_enrollment(self):
+        roster = reverse('participants', args=[self.activity.pk])
+        catalog = reverse('liste_activites')
+        self.assertRedirects(self.client.get(roster), reverse('connexion'))
+        self.client.force_login(self.teacher)
+        self.assertContains(self.client.get(catalog), roster)
+        self.assertContains(self.client.get(roster), 'Aucun élève inscrit')
+        self.client.force_login(self.student)
+        self.client.post(self.booking)
+        self.assertEqual(self.client.get(roster).status_code, 404)
+        other_teacher = Utilisateur.objects.create_user('collegue', role='professeur')
+        self.client.force_login(other_teacher)
+        self.assertNotContains(self.client.get(catalog), roster)
+        self.assertEqual(self.client.get(roster).status_code, 404)
+        admin = Utilisateur.objects.create_user('direction', role='admin')
+        for viewer in (self.teacher, admin):
+            self.client.force_login(viewer)
+            response = self.client.get(roster)
+            self.assertContains(response, '<li class="list-group-item">eleve</li>', html=True)
+            self.assertContains(response, '1 inscription sur 1 place')
+            self.assertIn('no-store', response['Cache-Control'])
+        with self.settings(DEMO_MODE=True):
+            self.assertEqual(self.client.get(roster).status_code, 404)

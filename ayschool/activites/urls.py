@@ -5,5 +5,6 @@ urlpatterns = [
     path('', views.liste_activites, name='liste_activites'),
     path('inscription/<int:activite_id>/', views.inscription_activite, name='inscription_activite'),
     path('ajouter/', views.ajouter_activite, name='ajouter_activite'),
+    path('<int:activite_id>/participants/', views.participants, name='participants'),
     path('suivi/', views.suivi, name='suivi'),
 ]

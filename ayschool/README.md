@@ -60,3 +60,7 @@ Pour une ancienne base, vérifie les doublons d’inscription pour un même coup
 Le premier contrat peut être un pilote payant comprenant la configuration, la formation et un mois de support. Fixe le devis après estimation du temps, de l’hébergement et du support. Avant d’ouvrir à de vrais élèves, convenez avec l’établissement du périmètre des données, des accès et de la durée de conservation.
 
 `python manage.py test` vérifie la démo, l’authentification établissement, les droits de publication, le suivi individuel et la capacité.
+
+### Démonstration à un responsable du parascolaire
+
+Avec deux comptes fictifs, publie une activité depuis le compte professeur. Depuis le compte élève, réserve une place. Reconnecte-toi comme professeur, ouvre le catalogue et clique sur **Voir les inscrits**. La liste montre les identifiants inscrits et la capacité. Chaque professeur consulte ses propres activités. Un compte de rôle administrateur peut consulter toutes les listes. Pour le premier essai, utilise uniquement des identifiants fictifs.

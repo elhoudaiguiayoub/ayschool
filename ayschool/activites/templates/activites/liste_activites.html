@@ -26,6 +26,11 @@
                 {% if activite.professeur %}
                     <small class="text-muted mb-3">Responsable : {{ activite.professeur.username }}</small>
                 {% endif %}
+                {% if not demo_mode %}
+                    {% if demo_role == 'admin' or demo_role == 'professeur' and activite.professeur_id == user.pk %}
+                        <a href="{% url 'participants' activite.pk %}" class="btn btn-outline-primary mt-auto">Voir les inscrits</a>
+                    {% endif %}
+                {% endif %}
                 {% if demo_role == 'eleve' or demo_mode and is_demo_authenticated %}
                     <a href="{% url 'inscription_activite' activite.id %}" class="btn btn-primary w-100 mt-auto">S'inscrire</a>
                 {% elif not is_demo_authenticated %}

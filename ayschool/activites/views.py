@@ -1,5 +1,7 @@
 from django.conf import settings
 from django.contrib import messages
+from django.http import Http404
+from django.views.decorators.cache import never_cache
 from django.db import transaction
 from django.utils import timezone
 from django.shortcuts import get_object_or_404, render, redirect
@@ -127,4 +129,25 @@ def inscription_etablissement(request, activite_id):
         'activite': activite,
         'deja_inscrit': deja_inscrit,
         'inscriptions_closes': activite.date <= timezone.now(),
+    })
+
+@never_cache
+def participants(request, activite_id):
+    if settings.DEMO_MODE:
+        raise Http404
+    if not request.user.is_authenticated:
+        return redirect('connexion')
+    activities = Activite.objects.all()
+    if request.user.role == 'professeur':
+        activities = activities.filter(professeur=request.user)
+    elif request.user.role != 'admin':
+        raise Http404
+    activity = get_object_or_404(activities, pk=activite_id)
+    participants = list(
+        Inscription.objects.filter(activite=activity)
+        .order_by('eleve__username')
+        .values_list('eleve__username', flat=True)
+    )
+    return render(request, 'activites/participants.html', {
+        'activite': activity, 'participants': participants,
     })
