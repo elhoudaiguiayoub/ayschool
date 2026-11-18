@@ -16,5 +16,10 @@ class Inscription(models.Model):
     activite = models.ForeignKey(Activite, on_delete=models.CASCADE)
     date_inscription = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['eleve', 'activite'], name='activites_unique_inscription'),
+        ]
+
     def __str__(self):
         return f"{self.eleve.username} - {self.activite.nom}"

@@ -12,7 +12,11 @@
                 {{ form.as_p }}
                 <button type="submit" class="btn btn-primary w-100 py-2">Se connecter</button>
             </form>
-            <p class="text-center text-muted mt-4 mb-0">Pas encore de compte ? <a href="{% url 'inscription' %}">Créer un compte</a></p>
+            {% if demo_mode %}
+                <p class="text-center text-muted mt-4 mb-0">Pas encore de compte ? <a href="{% url 'inscription' %}">Créer un compte démo</a></p>
+            {% else %}
+                <p class="text-center text-muted mt-4 mb-0">Pour obtenir un compte, contacte ton établissement.</p>
+            {% endif %}
         </div>
     </div>
 </div>

@@ -1,0 +1,17 @@
+{% extends 'authentification/base.html' %}
+
+{% block content %}
+<a href="{% url 'liste_activites' %}">Retour aux activités</a>
+<h1 class="mt-4">{{ activite.nom }}</h1>
+<p>{{ activite.date|date:"d M Y à H:i" }} · {{ participants|length }} inscription{{ participants|length|pluralize }} sur {{ activite.nombre_max_participants }} place{{ activite.nombre_max_participants|pluralize }}</p>
+<h2 class="h4">Élèves inscrits</h2>
+{% if participants %}
+<ul class="list-group">
+    {% for identifiant in participants %}
+        <li class="list-group-item">{{ identifiant }}</li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>Aucun élève inscrit pour le moment.</p>
+{% endif %}
+{% endblock %}

@@ -1,10 +1,14 @@
+from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth import login, logout
+from django.contrib.auth.forms import AuthenticationForm
+from django.views.decorators.http import require_http_methods
 from django.shortcuts import render, redirect
 from .forms import DemoLoginForm, DemoRegistrationForm
 
 
 def _is_logged(request):
-    return bool(request.session.get('demo_user'))
+    return bool(request.session.get('demo_user')) if settings.DEMO_MODE else request.user.is_authenticated
 
 
 def accueil(request):
@@ -14,6 +18,13 @@ def accueil(request):
 def connexion(request):
     if _is_logged(request):
         return redirect('liste_activites')
+
+    if not settings.DEMO_MODE:
+        form = AuthenticationForm(request, data=request.POST if request.method == 'POST' else None)
+        if request.method == 'POST' and form.is_valid():
+            login(request, form.get_user())
+            return redirect('liste_activites')
+        return render(request, 'authentification/connexion.html', {'form': form})
 
     if request.method == 'POST':
         form = DemoLoginForm(request.POST)
@@ -31,6 +42,9 @@ def connexion(request):
 
 
 def inscription(request):
+    if not settings.DEMO_MODE:
+        messages.info(request, 'Votre établissement crée votre compte.')
+        return redirect('connexion')
     if _is_logged(request):
         return redirect('liste_activites')
 
@@ -50,6 +64,12 @@ def inscription(request):
 
 
 def profil(request):
+    if not settings.DEMO_MODE:
+        if not request.user.is_authenticated:
+            return redirect('connexion')
+        return render(request, 'authentification/profil.html', {
+            'username': request.user.get_username(), 'role': request.user.role,
+        })
     user = request.session.get('demo_user')
     if not user:
         return redirect('connexion')
@@ -59,7 +79,13 @@ def profil(request):
     })
 
 
+@require_http_methods(['GET', 'POST'])
 def deconnexion(request):
-    request.session.flush()
+    if settings.DEMO_MODE:
+        request.session.flush()
+    elif request.method == 'POST':
+        logout(request)
+    else:
+        return redirect('profil')
     messages.info(request, 'Déconnexion réussie.')
     return redirect('accueil')
