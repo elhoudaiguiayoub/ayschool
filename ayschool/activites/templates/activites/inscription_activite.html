@@ -11,10 +11,16 @@
                 <div class="col-md-6"><div class="stat-card p-3"><small class="text-muted">Date</small><div class="fw-bold">{{ activite.date|date:"d M Y • H:i" }}</div></div></div>
                 <div class="col-md-6"><div class="stat-card p-3"><small class="text-muted">Places max</small><div class="fw-bold">{{ activite.nombre_max_participants }}</div></div></div>
             </div>
+            {% if deja_inscrit %}
+                <p class="fw-bold">Tu es déjà inscrit à cette activité.</p>
+            {% elif inscriptions_closes %}
+                <p class="fw-bold">Les inscriptions sont closes.</p>
+            {% else %}
             <form method="post">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-primary w-100 py-2">Confirmer mon inscription</button>
             </form>
+            {% endif %}
             <a href="{% url 'liste_activites' %}" class="btn btn-link w-100 mt-2">Retour aux activités</a>
         </div>
     </div>

@@ -7,9 +7,9 @@
     <p class="hero-text mb-4">AySchool aide les élèves à découvrir des activités, les professeurs à les publier, et l'administration à garder une vision claire des inscriptions.</p>
     <div class="d-flex flex-wrap gap-3">
         <a class="btn btn-primary btn-lg px-4" href="{% url 'liste_activites' %}">Voir les activités</a>
-        {% if not is_demo_authenticated %}
+        {% if demo_mode and not is_demo_authenticated %}
             <a class="btn btn-outline-primary btn-lg px-4" href="{% url 'inscription' %}">Créer un compte</a>
-        {% else %}
+        {% elif is_demo_authenticated and demo_role == 'eleve' %}
             <a class="btn btn-outline-primary btn-lg px-4" href="{% url 'suivi' %}">Voir mon suivi</a>
         {% endif %}
     </div>
@@ -32,9 +32,9 @@
     </div>
     <div class="col-md-4">
         <div class="stat-card p-4 h-100">
-            <div class="badge-soft mb-3">Portfolio</div>
-            <h3 class="h5 fw-bold">Projet full-stack</h3>
-            <p class="text-muted mb-0">Django, templates, formulaires, sessions signées, UI responsive et déploiement Vercel.</p>
+            <div class="badge-soft mb-3">Établissements</div>
+            <h3 class="h5 fw-bold">Suivi des inscriptions</h3>
+            <p class="text-muted mb-0">L’équipe retrouve les inscriptions et les capacités au même endroit.</p>
         </div>
     </div>
 </div>

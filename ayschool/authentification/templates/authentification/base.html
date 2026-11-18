@@ -21,15 +21,24 @@
             <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
                 <li class="nav-item"><a class="nav-link" href="{% url 'liste_activites' %}">Activités</a></li>
                 {% if is_demo_authenticated %}
-                    <li class="nav-item"><a class="nav-link" href="{% url 'suivi' %}">Mon suivi</a></li>
+                    {% if demo_mode or demo_role == 'eleve' %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'suivi' %}">Mon suivi</a></li>
+                    {% endif %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'profil' %}">Profil</a></li>
-                    {% if demo_role == 'professeur' or demo_role == 'admin' or False %}
+                    {% if demo_role == 'professeur' or demo_role == 'admin' %}
                         <li class="nav-item"><a class="nav-link nav-cta" href="{% url 'ajouter_activite' %}">+ Activité</a></li>
                     {% endif %}
-                    <li class="nav-item"><a class="nav-link" href="{% url 'deconnexion' %}">Déconnexion</a></li>
+                    <li class="nav-item">
+                        <form method="post" action="{% url 'deconnexion' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="nav-link btn btn-link">Déconnexion</button>
+                        </form>
+                    </li>
                 {% else %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'connexion' %}">Connexion</a></li>
-                    <li class="nav-item"><a class="nav-link nav-cta" href="{% url 'inscription' %}">Créer un compte</a></li>
+                    {% if demo_mode %}
+                        <li class="nav-item"><a class="nav-link nav-cta" href="{% url 'inscription' %}">Créer un compte démo</a></li>
+                    {% endif %}
                 {% endif %}
             </ul>
         </div>
@@ -51,7 +60,7 @@
 <footer class="footer mt-5 py-4">
     <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
         <p class="mb-0">© 2026 AySchool — Plateforme parascolaire</p>
-        <small>Projet Django • Démo Vercel • Sessions • UI responsive</small>
+        <small>{% if demo_mode %}Démonstration{% else %}Espace établissement{% endif %}</small>
     </div>
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

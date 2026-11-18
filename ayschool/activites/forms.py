@@ -5,3 +5,11 @@ class ActiviteForm(forms.Form):
     description = forms.CharField(label='Description', widget=forms.Textarea(attrs={'rows': 4}))
     date = forms.DateTimeField(label='Date', required=False, help_text='Démo Vercel : la création est simulée.')
     nombre_max_participants = forms.IntegerField(label='Nombre maximum de participants', min_value=1, max_value=200)
+
+
+class EtablissementActiviteForm(ActiviteForm):
+    nom = forms.CharField(label='Nom de l’activité', max_length=100)
+    date = forms.DateTimeField(
+        label='Date et heure',
+        widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
+    )
